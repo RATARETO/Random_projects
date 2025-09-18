@@ -1,0 +1,77 @@
+from math import pi, cos, sin, radians
+
+import time
+
+import pygame
+
+radius = 1.0
+
+
+# def get_perimetr(target):
+#     count_a = 6
+#     length_a = radius
+#
+#     for _ in range(target - 1):
+#
+#         height_1 = (radius**2 - (length_a / 2)**2)**0.5
+#
+#         height_2 = radius - height_1
+#
+#         length_a = (height_2**2 + (length_a / 2)**2)**0.5
+#
+#         count_a *= 2
+#
+#     return length_a * count_a
+
+
+def get_perimetr_re(target: int, curr: int = 1, count_a: int = 6, length_a: float = radius) -> float:
+    if curr == target:
+        return length_a * count_a
+    return get_perimetr_re(
+        target,
+        curr + 1,
+        count_a * 2,
+        ((radius - (radius**2 - (length_a / 2)**2)**0.5)**2 + (length_a / 2)**2)**0.5
+    )
+
+
+perimetr = get_perimetr_re(50)
+# perimetr = get_perimetr(50)
+print(f"my number pi:    {perimetr / (radius * 2)}")
+print(f"number for math: {pi}")
+
+
+window = pygame.display.set_mode((1200, 900))
+
+clock = pygame.time.Clock()
+
+center_circle = [600, 450]
+
+k, count = 400, 1
+now = time.time()
+
+while True:
+    window.fill((0, 0, 0))
+    for event in pygame.event.get():
+        if event.type == pygame.QUIT:
+            exit()
+
+    points = []
+
+    if max(0, 1 - time.time() + now) == 0:
+        points = []
+        count += 1
+        now = time.time()
+
+    for angle in range(0, 360, 60 // count):
+        radians_for_math = radians(angle)
+
+        x = center_circle[0] + radius * cos(radians_for_math) * k
+        y = center_circle[1] + radius * sin(radians_for_math) * k
+
+        points.append((x, y))
+
+    pygame.draw.polygon(window, (255, 255, 255), points)
+
+    pygame.display.update()
+    clock.tick(60)
