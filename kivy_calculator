@@ -1,0 +1,39 @@
+from kivy.app import App
+from kivy.uix.gridlayout import GridLayout
+
+
+class Container(GridLayout):
+    def change_text(self, text):
+        if "ZeroDivisionError" in self.label_widget.text or "SyntaxError" in self.label_widget.text:
+            self.label_widget.text = ""
+        self.label_widget.text += text
+
+    def get_answer(self):
+        try:
+            self.label_widget.text = str(eval(self.label_widget.text))
+        except ZeroDivisionError:
+            self.label_widget.text = "ZeroDivisionError"
+        except SyntaxError:
+            self.label_widget.text = "SyntaxError"
+        except NameError:
+            self.label_widget.text = "NameError"
+
+    def remove_text(self):
+        self.label_widget.text = ""
+
+    def del_char(self):
+        self.label_widget.text = self.label_widget.text[:-1]
+
+
+class MyApp(App):
+
+    def __init__(self):
+        super().__init__()
+        self.title = "Калькулятор"
+
+    def build(self):
+        return Container()
+
+
+if __name__ == "__main__":
+    MyApp().run()
